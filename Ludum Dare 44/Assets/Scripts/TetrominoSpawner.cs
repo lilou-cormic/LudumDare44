@@ -21,7 +21,7 @@ public class TetrominoSpawner : MonoBehaviour
 
     private Tetromino Spawn(Vector2 position)
     {
-        //TODO Random rotation
+        //TODO Random rotation?
         var tetromino = Instantiate(TetrominoPrefab, new Vector3(Mathf.RoundToInt(position.x), Mathf.RoundToInt(position.y)), Quaternion.identity);
         tetromino.SetTetrominoType((TetrominoType)Random.Range(0, 7));
 
@@ -34,11 +34,7 @@ public class TetrominoSpawner : MonoBehaviour
         tetromino.SetStatic();
 
         Destroy(tetromino.gameObject);
-    }
 
-    private void Update()
-    {
-        //if (Input.GetMouseButtonDown(0))
-        //    Spawn(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+        Spawn();
     }
 }

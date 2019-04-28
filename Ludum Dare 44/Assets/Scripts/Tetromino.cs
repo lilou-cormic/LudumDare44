@@ -14,6 +14,9 @@ public class Tetromino : MonoBehaviour
     [SerializeField]
     private Block BlockPrefab = null;
 
+    [SerializeField]
+    private UIPoints PointsDisplayPrefab = null;
+
     public Block[] Blocks { get; } = new Block[4];
 
     private float FallTimer = 0f;
@@ -27,6 +30,19 @@ public class Tetromino : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         name = "Tetromino" + NextID++.ToString("0000");
+    }
+
+    public void SetTetrominoType(TetrominoType tetrominoType)
+    {
+        Vector3[] positions = GetPositions(tetrominoType);
+
+        for (int i = 0; i < 4; i++)
+        {
+            var block = Instantiate(BlockPrefab, transform.position + positions[i], Quaternion.identity, transform);
+            block.SetBlockDef(BlockDefCollection.GetRandomBlockDef());
+
+            Blocks[i] = block;
+        }
     }
 
     private void Update()
@@ -55,10 +71,10 @@ public class Tetromino : MonoBehaviour
         {
             FallTimer += Time.deltaTime;
 
-            if (Input.GetButtonDown("Right") && !Blocks.Any(x => x.GetNeighbor(Vector3.right).transform?.gameObject.layer == StaticLayer))
+            if (Input.GetButtonDown("Right") && transform.position.x < 18 && !Blocks.Any(x => x.GetNeighbor(Vector3.right).transform?.gameObject.layer == StaticLayer))
                 rb.MovePosition((Vector2)transform.position + Vector2.right);
 
-            if (Input.GetButtonDown("Left") && !Blocks.Any(x => x.GetNeighbor(Vector3.left).transform?.gameObject.layer == StaticLayer))
+            if (Input.GetButtonDown("Left") && transform.position.x > -18 && !Blocks.Any(x => x.GetNeighbor(Vector3.left).transform?.gameObject.layer == StaticLayer))
                 rb.MovePosition((Vector2)transform.position + Vector2.left);
 
             if (Input.GetButton("Down"))
@@ -68,9 +84,17 @@ public class Tetromino : MonoBehaviour
             }
 
             if (Input.GetButtonDown("Up"))
-            {
-                rb.MoveRotation(rb.rotation -= 90);
-            }
+                Rotate();
+        }
+    }
+
+    private void Rotate()
+    {
+        rb.rotation -= 90;
+
+        foreach (var block in Blocks)
+        {
+            block.transform.rotation = Quaternion.Euler(0, 0, block.transform.rotation.eulerAngles.z + 90);
         }
     }
 
@@ -82,19 +106,6 @@ public class Tetromino : MonoBehaviour
         SetStatic();
 
         CheckMatch3();
-    }
-
-    public void SetTetrominoType(TetrominoType tetrominoType)
-    {
-        Vector3[] positions = GetPositions(tetrominoType);
-
-        for (int i = 0; i < 4; i++)
-        {
-            var block = Instantiate(BlockPrefab, transform.position + positions[i], Quaternion.identity, transform);
-            block.SetBlockDef(BlockDefCollection.GetRandomBlockDef());
-
-            Blocks[i] = block;
-        }
     }
 
     private static Vector3[] GetPositions(TetrominoType tetrominoType)
@@ -180,6 +191,7 @@ public class Tetromino : MonoBehaviour
 
         if (transform.position.y > 12)
         {
+            ScoreManager.SetHighScore();
             SceneManager.LoadScene("GameOver");
             return;
         }
@@ -191,52 +203,60 @@ public class Tetromino : MonoBehaviour
 
             Blocks[i].gameObject.transform.SetParent(null);
         }
-
-        TetrominoSpawner.Spawn();
     }
 
     private void CheckMatch3()
     {
-        HashSet<Block>[] dd = new HashSet<Block>[4];
+        HashSet<Block>[] matchingBlocks = new HashSet<Block>[4];
 
         for (int i = 0; i < 4; i++)
         {
             if (Blocks[i] == null)
                 continue;
 
-            dd[i] = new HashSet<Block>() { Blocks[i] };
+            matchingBlocks[i] = new HashSet<Block>() { Blocks[i] };
 
-            Blocks[i].GetMatchingNeighbors(dd[i]);
+            Blocks[i].GetMatchingNeighbors(matchingBlocks[i]);
         }
 
         for (int i = 0; i < 4; i++)
         {
-            var ss = dd[i];
-
-            //Debug.Log(Blocks[i].name + ": " + string.Join(", ", ss.Select(x => x.ID)));
+            var matchSet = matchingBlocks[i];
 
             for (int j = i + 1; j < 4; j++)
             {
-                if (dd[j].Any(x => ss.Contains(x)))
+                if (matchingBlocks[j].Any(x => matchSet.Contains(x)))
                 {
-                    foreach (var item in dd[j])
+                    foreach (var item in matchingBlocks[j])
                     {
-                        ss.Add(item);
+                        matchSet.Add(item);
                     }
 
-                    dd[j].Clear();
+                    matchingBlocks[j].Clear();
                 }
             }
 
-            if (ss.Count >= 3)
+            if (matchSet.Count >= 3)
             {
-                foreach (var block in ss)
+                foreach (var block in matchSet)
                 {
                     block.gameObject.transform.SetParent(null);
                     Destroy(block.gameObject);
                 }
+
+                if (Blocks[i].BlockDef.BlockType == BlockType.Coin)
+                {
+                    var pointsDisplay = Instantiate(PointsDisplayPrefab, Blocks[i].transform.position, Quaternion.identity);
+
+                    int points = ScoreManager.AddPoints(matchSet.Count);
+
+                    Health.AddHealth(points);
+                    pointsDisplay.SetPointsText(points);
+                }
             }
         }
+
+        TetrominoSpawner.Spawn();
 
         Destroy(gameObject);
     }

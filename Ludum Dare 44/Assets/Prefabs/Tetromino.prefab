@@ -46,9 +46,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BlockPrefab: {fileID: 7959807350046712082, guid: b6ef785c5e1e5184990d939eb67eb892,
     type: 3}
-  StaticLayer:
-    serializedVersion: 2
-    m_Bits: 512
+  PointsDisplayPrefab: {fileID: 8642996006146712763, guid: b1b63fbae4b23cd4e937f47838db3127,
+    type: 3}
 --- !u!50 &5804478050571663497
 Rigidbody2D:
   serializedVersion: 4

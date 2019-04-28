@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Coin
   m_EditorClassIdentifier: 
   BlockType: 2
-  Sprite: {fileID: 21300000, guid: 516a7282e700111479c495d7deb6b346, type: 3}
+  Sprite: {fileID: 21300000, guid: 49e8ce9655d850741aecc2de837ae8fe, type: 3}
