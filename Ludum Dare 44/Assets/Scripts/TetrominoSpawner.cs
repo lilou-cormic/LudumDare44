@@ -32,6 +32,8 @@ public class TetrominoSpawner : MonoBehaviour
     {
         var tetromino = Spawn(Vector2.zero);
         tetromino.SetStatic();
+
+        Destroy(tetromino.gameObject);
     }
 
     private void Update()
