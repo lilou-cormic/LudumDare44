@@ -34,14 +34,14 @@ public class Tetromino : MonoBehaviour
         name = "Tetromino" + NextID++.ToString("0000");
     }
 
-    public void SetTetrominoType(TetrominoType tetrominoType)
+    public void SetTetrominoDef(TetrominoDef tetrominoDef)
     {
-        Vector3[] positions = GetPositions(tetrominoType);
+        Vector3[] positions = TetrominoDef.GetPositions(tetrominoDef.TetrominoType);
 
         for (int i = 0; i < 4; i++)
         {
             var block = Instantiate(BlockPrefab, transform.position + positions[i], Quaternion.identity, transform);
-            block.SetBlockDef(BlockDefCollection.GetRandomBlockDef());
+            block.SetBlockDef(tetrominoDef.BlockDefs[i]);
 
             Blocks[i] = block;
         }
@@ -102,70 +102,6 @@ public class Tetromino : MonoBehaviour
         SetStatic();
 
         StartCoroutine(CheckMatch3());
-    }
-
-    private static Vector3[] GetPositions(TetrominoType tetrominoType)
-    {
-        Vector3[] positions = new Vector3[4];
-
-        #region switch (tetrominoType)
-        switch (tetrominoType)
-        {
-            case TetrominoType.I:
-                positions[0] = new Vector3(0, 1);
-                positions[1] = new Vector3(0, 0);
-                positions[2] = new Vector3(0, -1);
-                positions[3] = new Vector3(0, -2);
-                break;
-
-            case TetrominoType.O:
-                positions[0] = new Vector3(0, 0);
-                positions[1] = new Vector3(1, 0);
-                positions[2] = new Vector3(0, -1);
-                positions[3] = new Vector3(1, -1);
-                break;
-
-            case TetrominoType.T:
-                positions[0] = new Vector3(-1, 0);
-                positions[1] = new Vector3(0, 0);
-                positions[2] = new Vector3(1, 0);
-                positions[3] = new Vector3(0, -1);
-                break;
-
-            case TetrominoType.J:
-                positions[0] = new Vector3(0, 2);
-                positions[1] = new Vector3(0, 1);
-                positions[2] = new Vector3(0, 0);
-                positions[3] = new Vector3(-1, 0);
-                break;
-
-            case TetrominoType.L:
-                positions[0] = new Vector3(0, 2);
-                positions[1] = new Vector3(0, 1);
-                positions[2] = new Vector3(0, 0);
-                positions[3] = new Vector3(1, 0);
-                break;
-
-            case TetrominoType.S:
-                positions[0] = new Vector3(1, 0);
-                positions[1] = new Vector3(0, 0);
-                positions[2] = new Vector3(0, -1);
-                positions[3] = new Vector3(-1, -1);
-                break;
-
-            case TetrominoType.Z:
-                positions[0] = new Vector3(-1, 0);
-                positions[1] = new Vector3(0, 0);
-                positions[2] = new Vector3(0, -1);
-                positions[3] = new Vector3(1, -1);
-                break;
-
-            default:
-                throw new System.InvalidOperationException($"{tetrominoType} is not valid for {nameof(Tetromino)}.{nameof(GetPositions)}");
-        }
-        #endregion
-
-        return positions;
     }
 
     public void SetStatic()
