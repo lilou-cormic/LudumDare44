@@ -20,6 +20,24 @@ public class Tetromino : MonoBehaviour
     [SerializeField]
     private UIPoints PointsDisplayPrefab = null;
 
+    [SerializeField]
+    private AudioClip MoveSound = null;
+
+    [SerializeField]
+    private AudioClip RotateSound = null;
+
+    [SerializeField]
+    private AudioClip LandSound = null;
+
+    [SerializeField]
+    private AudioClip MatchedSound = null;
+
+    [SerializeField]
+    private AudioClip CoinSound = null;
+
+    [SerializeField]
+    private AudioClip GameOverSound = null;
+
     public Block[] Blocks { get; } = new Block[4];
 
     private float FallTimer = 0f;
@@ -69,10 +87,10 @@ public class Tetromino : MonoBehaviour
             FallTimer += Time.deltaTime;
 
             if (Input.GetButtonDown("Right") && !Blocks.Any(x => x.GetNeighbor(Vector3.right).transform?.gameObject.layer == StaticLayer))
-                rb.MovePosition((Vector2)transform.position + Vector2.right);
+                Move(Vector2.right);
 
             if (Input.GetButtonDown("Left") && !Blocks.Any(x => x.GetNeighbor(Vector3.left).transform?.gameObject.layer == StaticLayer))
-                rb.MovePosition((Vector2)transform.position + Vector2.left);
+                Move(Vector2.left);
 
             if (Input.GetButton("Down"))
                 fall.StartFalling();
@@ -82,9 +100,18 @@ public class Tetromino : MonoBehaviour
         }
     }
 
+    private void Move(Vector2 direction)
+    {
+        SoundPlayer.Play(MoveSound);
+
+        rb.MovePosition((Vector2)transform.position + direction);
+    }
+
     private void Rotate()
     {
         //TODO Check if it can be rotated
+
+        SoundPlayer.Play(RotateSound);
 
         rb.rotation -= 90;
 
@@ -104,10 +131,12 @@ public class Tetromino : MonoBehaviour
         StartCoroutine(CheckMatch3());
     }
 
-    public void SetStatic()
+    private void SetStatic()
     {
         if (rb.bodyType == RigidbodyType2D.Static)
             return;
+
+        SoundPlayer.Play(LandSound);
 
         fall.SetStatic();
 
@@ -118,6 +147,8 @@ public class Tetromino : MonoBehaviour
 
         if (transform.position.y > 11)
         {
+            SoundPlayer.Play(GameOverSound);
+
             ScoreManager.SetHighScore();
             SceneManager.LoadScene("GameOver");
             return;
@@ -201,12 +232,18 @@ public class Tetromino : MonoBehaviour
 
                 if (Blocks[i].BlockDef.BlockType == BlockType.Coin)
                 {
+                    SoundPlayer.Play(CoinSound);
+
                     var pointsDisplay = Instantiate(PointsDisplayPrefab, Blocks[i].transform.position, Quaternion.identity);
 
                     int points = ScoreManager.AddPoints(matchSet.Count);
 
                     Health.AddHealth(points);
                     pointsDisplay.SetPointsText(points);
+                }
+                else
+                {
+                    SoundPlayer.Play(MatchedSound);
                 }
             }
         }

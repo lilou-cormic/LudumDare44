@@ -49,6 +49,12 @@ MonoBehaviour:
     type: 3}
   PointsDisplayPrefab: {fileID: 8642996006146712763, guid: b1b63fbae4b23cd4e937f47838db3127,
     type: 3}
+  MoveSound: {fileID: 8300000, guid: a99feab65ff18cb4abd234515b3e0110, type: 3}
+  RotateSound: {fileID: 8300000, guid: e9e3c6c82750ec248a81821f01d3e607, type: 3}
+  LandSound: {fileID: 8300000, guid: 78eb8bed8332891458a44db72a1deb66, type: 3}
+  MatchedSound: {fileID: 8300000, guid: 5f2b8d242a8d87d438edb1e6f9a9dc4d, type: 3}
+  CoinSound: {fileID: 8300000, guid: 7c1b285e1f1cbb448beab95d31e80862, type: 3}
+  GameOverSound: {fileID: 8300000, guid: 888f71ec8f7f0fc40aa6e79a3979f793, type: 3}
 --- !u!114 &7188742952870555563
 MonoBehaviour:
   m_ObjectHideFlags: 0

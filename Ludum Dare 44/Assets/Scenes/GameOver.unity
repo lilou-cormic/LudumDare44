@@ -205,6 +205,7 @@ GameObject:
   - component: {fileID: 174724525}
   - component: {fileID: 174724524}
   - component: {fileID: 174724526}
+  - component: {fileID: 174724527}
   m_Layer: 5
   m_Name: Panel
   m_TagString: Untagged
@@ -279,6 +280,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba742841b4fe8844fb31ae8f02e1d70e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &174724527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 174724522}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d003f6fdc2d36d243a16d26b3037aa50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Buttons:
+  - {fileID: 2028249009}
+  - {fileID: 1487596986}
+  - {fileID: 415220202}
 --- !u!1001 &277928735
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -533,6 +550,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 03e1b14f6228a1948965979d24c652c5, type: 3}
+--- !u!114 &415220202 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4184024935727083683, guid: ffb838e4bc2c69544b81a15603ad1398,
+    type: 3}
+  m_PrefabInstance: {fileID: 1390364146}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1392445389, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &621836970
 GameObject:
   m_ObjectHideFlags: 0
@@ -1023,6 +1052,11 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 4184024935727083683, guid: ffb838e4bc2c69544b81a15603ad1398,
+        type: 3}
+      propertyPath: m_Navigation.m_Mode
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4184024935727083682, guid: ffb838e4bc2c69544b81a15603ad1398,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1217,6 +1251,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 4184024935727083683, guid: ffb838e4bc2c69544b81a15603ad1398,
+        type: 3}
+      propertyPath: m_Navigation.m_Mode
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4184024935727083682, guid: ffb838e4bc2c69544b81a15603ad1398,
         type: 3}
@@ -1580,6 +1619,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1487596986 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4184024935727083683, guid: ffb838e4bc2c69544b81a15603ad1398,
+    type: 3}
+  m_PrefabInstance: {fileID: 1396782743}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1392445389, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1509806513
 GameObject:
   m_ObjectHideFlags: 0
@@ -1685,6 +1736,18 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 2053163403}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2028249009 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4184024935727083683, guid: ffb838e4bc2c69544b81a15603ad1398,
+    type: 3}
+  m_PrefabInstance: {fileID: 2053163403}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2028249006}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1392445389, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2028953771
 GameObject:
   m_ObjectHideFlags: 0
@@ -1792,6 +1855,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 4184024935727083683, guid: ffb838e4bc2c69544b81a15603ad1398,
+        type: 3}
+      propertyPath: m_Interactable
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4184024935727083683, guid: ffb838e4bc2c69544b81a15603ad1398,
+        type: 3}
+      propertyPath: m_Navigation.m_Mode
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4184024935727083682, guid: ffb838e4bc2c69544b81a15603ad1398,
         type: 3}
