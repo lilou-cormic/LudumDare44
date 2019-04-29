@@ -6,6 +6,30 @@ public class Block : MonoBehaviour, IEqualityComparer<Block>
 {
     private static int NextID = 1;
 
+    //private Rigidbody2D _rb;
+    //private Rigidbody2D rb
+    //{
+    //    get
+    //    {
+    //        if (_rb == null)
+    //            _rb = GetComponent<Rigidbody2D>();
+
+    //        return _rb;
+    //    }
+    //}
+
+    //private Fall _fall;
+    //private Fall fall
+    //{
+    //    get
+    //    {
+    //        if (_fall == null)
+    //            _fall = GetComponent<Fall>();
+
+    //        return _fall;
+    //    }
+    //}
+
     [SerializeField]
     private SpriteRenderer SpriteRenderer = null;
 
@@ -79,6 +103,26 @@ public class Block : MonoBehaviour, IEqualityComparer<Block>
 
         return obj.ID;
     }
+
+    public void SetToBeDestroyed()
+    {
+        SpriteRenderer.color = Color.gray;
+    }
+
+    //public void StartFalling()
+    //{
+    //    GetComponent<Fall>().StartFalling();
+    //}
+
+    //private void OnCollisionEnter2D(Collision2D collision)
+    //{
+    //    if (rb == null || rb.bodyType == RigidbodyType2D.Static)
+    //        return;
+
+    //    fall.SetStatic();
+
+    //    //CheckMatch3();
+    //}
 }
 
 

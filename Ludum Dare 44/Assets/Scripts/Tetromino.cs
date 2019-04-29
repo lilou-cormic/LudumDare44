@@ -5,11 +5,14 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Fall))]
 public class Tetromino : MonoBehaviour
 {
     private static int NextID = 1;
 
     private Rigidbody2D rb;
+
+    private Fall fall;
 
     [SerializeField]
     private Block BlockPrefab = null;
@@ -24,11 +27,10 @@ public class Tetromino : MonoBehaviour
 
     private static int StaticLayer = 9;
 
-    private bool IsSpeedFalling = false;
-
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        fall = GetComponent<Fall>();
         name = "Tetromino" + NextID++.ToString("0000");
     }
 
@@ -51,14 +53,9 @@ public class Tetromino : MonoBehaviour
             return;
 
         if (Input.GetButtonUp("Down"))
-        {
-            IsSpeedFalling = false;
-            rb.velocity = Vector2.zero;
+            fall.StopFalling();
 
-            transform.position = new Vector3(transform.position.x, Mathf.FloorToInt(transform.position.y));
-        }
-
-        if (IsSpeedFalling)
+        if (fall.IsFalling)
             return;
 
         if (FallTimer >= FallDelay)
@@ -71,17 +68,14 @@ public class Tetromino : MonoBehaviour
         {
             FallTimer += Time.deltaTime;
 
-            if (Input.GetButtonDown("Right") && transform.position.x < 18 && !Blocks.Any(x => x.GetNeighbor(Vector3.right).transform?.gameObject.layer == StaticLayer))
+            if (Input.GetButtonDown("Right") && !Blocks.Any(x => x.GetNeighbor(Vector3.right).transform?.gameObject.layer == StaticLayer))
                 rb.MovePosition((Vector2)transform.position + Vector2.right);
 
-            if (Input.GetButtonDown("Left") && transform.position.x > -18 && !Blocks.Any(x => x.GetNeighbor(Vector3.left).transform?.gameObject.layer == StaticLayer))
+            if (Input.GetButtonDown("Left") && !Blocks.Any(x => x.GetNeighbor(Vector3.left).transform?.gameObject.layer == StaticLayer))
                 rb.MovePosition((Vector2)transform.position + Vector2.left);
 
             if (Input.GetButton("Down"))
-            {
-                IsSpeedFalling = true;
-                rb.velocity = Vector2.down * 20f;
-            }
+                fall.StartFalling();
 
             if (Input.GetButtonDown("Up"))
                 Rotate();
@@ -90,6 +84,8 @@ public class Tetromino : MonoBehaviour
 
     private void Rotate()
     {
+        //TODO Check if it can be rotated
+
         rb.rotation -= 90;
 
         foreach (var block in Blocks)
@@ -105,7 +101,7 @@ public class Tetromino : MonoBehaviour
 
         SetStatic();
 
-        CheckMatch3();
+        StartCoroutine(CheckMatch3());
     }
 
     private static Vector3[] GetPositions(TetrominoType tetrominoType)
@@ -177,19 +173,14 @@ public class Tetromino : MonoBehaviour
         if (rb.bodyType == RigidbodyType2D.Static)
             return;
 
-        rb.velocity = Vector2.zero;
+        fall.SetStatic();
 
-        transform.position = new Vector3(transform.position.x, Mathf.RoundToInt(transform.position.y));
-
-        rb.bodyType = RigidbodyType2D.Static;
-        IsSpeedFalling = false;
-        gameObject.layer = StaticLayer;
         foreach (var block in Blocks)
         {
             block.gameObject.layer = StaticLayer;
         }
 
-        if (transform.position.y > 12)
+        if (transform.position.y > 11)
         {
             ScoreManager.SetHighScore();
             SceneManager.LoadScene("GameOver");
@@ -201,11 +192,19 @@ public class Tetromino : MonoBehaviour
             if (Blocks[i] == null)
                 continue;
 
-            Blocks[i].gameObject.transform.SetParent(null);
+            Blocks[i].gameObject.transform.SetParent(Board.Instance.transform);
+
+            //Rigidbody2D newRB = Blocks[i].gameObject.AddComponent<Rigidbody2D>();
+            //newRB.bodyType = RigidbodyType2D.Static;
+            //newRB.useFullKinematicContacts = true;
+            //newRB.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+
+            //Fall newFall = Blocks[i].gameObject.AddComponent<Fall>();
+            //newFall.FallSpeed = fall.FallSpeed * 2;
         }
     }
 
-    private void CheckMatch3()
+    private IEnumerator CheckMatch3()
     {
         HashSet<Block>[] matchingBlocks = new HashSet<Block>[4];
 
@@ -235,6 +234,26 @@ public class Tetromino : MonoBehaviour
                     matchingBlocks[j].Clear();
                 }
             }
+        }
+
+        for (int i = 0; i < 4; i++)
+        {
+            var matchSet = matchingBlocks[i];
+
+            if (matchSet.Count >= 3)
+            {
+                foreach (var block in matchSet)
+                {
+                    block.SetToBeDestroyed();
+                }
+            }
+        }
+
+        yield return new WaitForSeconds(0.4f);
+
+        for (int i = 0; i < 4; i++)
+        {
+            var matchSet = matchingBlocks[i];
 
             if (matchSet.Count >= 3)
             {
@@ -255,6 +274,8 @@ public class Tetromino : MonoBehaviour
                 }
             }
         }
+
+        //Board.Instance.MakeBlocksFall();
 
         TetrominoSpawner.Spawn();
 
