@@ -6,6 +6,9 @@ public class Board : MonoBehaviour
 {
     public static Board Instance { get; private set; }
 
+    [SerializeField]
+    private AudioClip RotateSound = null;
+
     private void Awake()
     {
         Instance = this;
@@ -24,6 +27,8 @@ public class Board : MonoBehaviour
 
     private void Rotate()
     {
+        SoundPlayer.Play(RotateSound);
+
         transform.rotation = Quaternion.Euler(0, 0, transform.rotation.eulerAngles.z - 90);
 
         foreach (var block in GetComponentsInChildren<Block>())

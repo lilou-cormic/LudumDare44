@@ -54,6 +54,8 @@ MonoBehaviour:
   LandSound: {fileID: 8300000, guid: 78eb8bed8332891458a44db72a1deb66, type: 3}
   MatchedSound: {fileID: 8300000, guid: 5f2b8d242a8d87d438edb1e6f9a9dc4d, type: 3}
   CoinSound: {fileID: 8300000, guid: 7c1b285e1f1cbb448beab95d31e80862, type: 3}
+  BombSound: {fileID: 8300000, guid: c1fc161c8f05724408071f65f3f9f971, type: 3}
+  ExplosiveSound: {fileID: 8300000, guid: a96c2884b89e12640821771e797fed65, type: 3}
   GameOverSound: {fileID: 8300000, guid: 888f71ec8f7f0fc40aa6e79a3979f793, type: 3}
 --- !u!114 &7188742952870555563
 MonoBehaviour:

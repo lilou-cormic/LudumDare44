@@ -25,7 +25,7 @@ public class UIHealth : MonoBehaviour
     {
         HealthValueText.text = Health.Value.ToString();
 
-        if (Health.Value < 25)
+        if (Health.Value < Health.MaxValue / 8)
             HealthValueText.color = BadColor;
         else if (Health.Value < Health.MaxValue / 2)
             HealthValueText.color = NormalColor;

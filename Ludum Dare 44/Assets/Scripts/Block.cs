@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Block : MonoBehaviour, IEqualityComparer<Block>
@@ -49,6 +50,14 @@ public class Block : MonoBehaviour, IEqualityComparer<Block>
         SpriteRenderer.sprite = blockDef.Sprite;
     }
 
+    public void GetSurroundingNeighbors(HashSet<Block> blocks, float radius)
+    {
+        foreach (var block in Physics2D.OverlapCircleAll(transform.position, radius).Select(x => x.transform?.GetComponent<Block>()).Where(x => x != null))
+        {
+            blocks.Add(block);
+        }
+    }
+
     public void GetMatchingNeighbors(HashSet<Block> blocks)
     {
         GetMatchingNeighbor(blocks, Vector3.right);
@@ -60,7 +69,7 @@ public class Block : MonoBehaviour, IEqualityComparer<Block>
     private void GetMatchingNeighbor(HashSet<Block> blocks, Vector3 direction)
     {
         var neighbor = GetNeighbor(direction).transform?.GetComponent<Block>();
-        if (neighbor != null && neighbor.BlockDef.Equals(BlockDef))
+        if (neighbor != null && ((int)BlockDef.BlockType >= 100 || neighbor.BlockDef.Equals(BlockDef)))
         {
             if (blocks.Add(neighbor))
                 neighbor.GetMatchingNeighbors(blocks);
@@ -128,7 +137,9 @@ public class Block : MonoBehaviour, IEqualityComparer<Block>
 
 public enum BlockType
 {
-    Blue,
-    Red,
-    Coin,
+    Blue = 0,
+    Red = 1,
+    Coin = 2,
+    Bomb = 100,
+    Explosive = 101,
 }

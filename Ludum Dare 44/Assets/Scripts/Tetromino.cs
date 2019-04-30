@@ -36,12 +36,18 @@ public class Tetromino : MonoBehaviour
     private AudioClip CoinSound = null;
 
     [SerializeField]
+    private AudioClip BombSound = null;
+
+    [SerializeField]
+    private AudioClip ExplosiveSound = null;
+
+    [SerializeField]
     private AudioClip GameOverSound = null;
 
     public Block[] Blocks { get; } = new Block[4];
 
-    private float FallTimer = 0f;
-    private float FallDelay = 1f;
+    private float FallTimer { get; set; } = 0f;
+    public static float FallDelay { get; set; } = 1f;
 
     private static int StaticLayer = 9;
 
@@ -50,6 +56,19 @@ public class Tetromino : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         fall = GetComponent<Fall>();
         name = "Tetromino" + NextID++.ToString("0000");
+
+        Health.ValueChanged += Health_ValueChanged;
+    }
+
+    private void OnDestroy()
+    {
+        Health.ValueChanged -= Health_ValueChanged;
+    }
+
+    private void Health_ValueChanged()
+    {
+        if (Health.Value <= 0)
+            GameOver();
     }
 
     public void SetTetrominoDef(TetrominoDef tetrominoDef)
@@ -147,10 +166,7 @@ public class Tetromino : MonoBehaviour
 
         if (transform.position.y > 11)
         {
-            SoundPlayer.Play(GameOverSound);
-
-            ScoreManager.SetHighScore();
-            SceneManager.LoadScene("GameOver");
+            GameOver();
             return;
         }
 
@@ -171,18 +187,28 @@ public class Tetromino : MonoBehaviour
         }
     }
 
+    private void GameOver()
+    {
+        SoundPlayer.Play(GameOverSound);
+
+        ScoreManager.SetHighScore();
+        SceneManager.LoadScene("GameOver");
+    }
+
     private IEnumerator CheckMatch3()
     {
         HashSet<Block>[] matchingBlocks = new HashSet<Block>[4];
 
         for (int i = 0; i < 4; i++)
         {
-            if (Blocks[i] == null)
-                continue;
+            Block block = Blocks[i];
 
-            matchingBlocks[i] = new HashSet<Block>() { Blocks[i] };
+            matchingBlocks[i] = new HashSet<Block>() { block };
 
-            Blocks[i].GetMatchingNeighbors(matchingBlocks[i]);
+            if (block.BlockDef.BlockType == BlockType.Bomb)
+                block.GetSurroundingNeighbors(matchingBlocks[i], 2f);
+            else
+                block.GetMatchingNeighbors(matchingBlocks[i]);
         }
 
         for (int i = 0; i < 4; i++)
@@ -230,7 +256,22 @@ public class Tetromino : MonoBehaviour
                     Destroy(block.gameObject);
                 }
 
-                if (Blocks[i].BlockDef.BlockType == BlockType.Coin)
+                if (matchSet.Any(x => x.BlockDef.BlockType == BlockType.Explosive))
+                {
+                    SoundPlayer.Play(ExplosiveSound);
+
+                    var pointsDisplay = Instantiate(PointsDisplayPrefab, Blocks[i].transform.position, Quaternion.identity);
+
+                    int points = ScoreManager.AddPoints(-matchSet.Count);
+
+                    Health.RemoveHealth(points);
+                    pointsDisplay.SetPointsText(points);
+                }
+                else if (matchSet.Any(x => x.BlockDef.BlockType == BlockType.Bomb))
+                {
+                    SoundPlayer.Play(BombSound);
+                }
+                else if (matchSet.Any(x => x.BlockDef.BlockType == BlockType.Coin))
                 {
                     SoundPlayer.Play(CoinSound);
 
@@ -249,6 +290,14 @@ public class Tetromino : MonoBehaviour
         }
 
         //Board.Instance.MakeBlocksFall();
+
+        ScoreManager.AddTetromino();
+
+        if (ScoreManager.TetrominoCount % 20 == 0)
+        {
+            ScoreManager.AddLevel();
+            FallDelay *= 0.9f;
+        }
 
         TetrominoSpawner.Spawn();
 

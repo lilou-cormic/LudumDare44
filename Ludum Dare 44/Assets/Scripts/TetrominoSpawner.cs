@@ -32,6 +32,8 @@ public class TetrominoSpawner : MonoBehaviour
     private void Awake()
     {
         _instance = this;
+
+        Tetromino.FallDelay = 1f;
     }
 
     private void Start()
@@ -39,6 +41,12 @@ public class TetrominoSpawner : MonoBehaviour
         PrepareNextTetromino();
 
         Spawn();
+    }
+
+    private void Update()
+    {
+        if (Input.GetButtonDown("Bomb") && _NextTetrominoDef.BlockDefs[0].BlockType != BlockType.Bomb)
+            PrepareTetrominoBomb();
     }
 
     private void PrepareNextTetromino()
@@ -52,6 +60,25 @@ public class TetrominoSpawner : MonoBehaviour
                 BlockDefCollection.GetRandomBlockDef(),
                 BlockDefCollection.GetRandomBlockDef(),
                 BlockDefCollection.GetRandomBlockDef(),
+            },
+        };
+
+        NextTetrominoDef = nextTetrominoDef;
+    }
+
+    private void PrepareTetrominoBomb()
+    {
+        Health.RemoveHealth(10);
+
+        TetrominoDef nextTetrominoDef = new TetrominoDef()
+        {
+            TetrominoType = _NextTetrominoDef.TetrominoType,
+            BlockDefs = new BlockDef[]
+            {
+                BlockDefCollection.GetBlockDef(BlockType.Bomb),
+                BlockDefCollection.GetBlockDef(BlockType.Bomb),
+                BlockDefCollection.GetBlockDef(BlockType.Bomb),
+                BlockDefCollection.GetBlockDef(BlockType.Bomb),
             },
         };
 
