@@ -45,7 +45,7 @@ public class TetrominoSpawner : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetButtonDown("Bomb") && _NextTetrominoDef.BlockDefs[0].BlockType != BlockType.Bomb)
+        if (Input.GetButtonDown("Bomb") && _NextTetrominoDef.BlockDefs[0].BlockType != BlockType.Bomb && Health.Value > 10)
             PrepareTetrominoBomb();
     }
 

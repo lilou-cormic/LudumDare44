@@ -22,7 +22,7 @@ public class ScoreManager : MonoBehaviour
         Score = 0;
         ScoreMultiplier = 1;
         TetrominoCount = 0;
-        Level = 0;
+        Level = 1;
 
         ScoreChanged?.Invoke();
     }
@@ -31,10 +31,8 @@ public class ScoreManager : MonoBehaviour
     {
         int pts = points * ScoreMultiplier;
 
-        Score += pts;
-
-        if (Score < 0)
-            Score = 0;
+        if (pts > 0)
+            Score += pts;
 
         ScoreChanged?.Invoke();
 

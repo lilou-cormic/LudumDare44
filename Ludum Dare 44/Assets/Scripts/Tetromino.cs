@@ -250,19 +250,13 @@ public class Tetromino : MonoBehaviour
 
             if (matchSet.Count >= 3)
             {
-                foreach (var block in matchSet)
-                {
-                    block.gameObject.transform.SetParent(null);
-                    Destroy(block.gameObject);
-                }
-
                 if (matchSet.Any(x => x.BlockDef.BlockType == BlockType.Explosive))
                 {
                     SoundPlayer.Play(ExplosiveSound);
 
                     var pointsDisplay = Instantiate(PointsDisplayPrefab, Blocks[i].transform.position, Quaternion.identity);
 
-                    int points = ScoreManager.AddPoints(-matchSet.Count);
+                    int points = ScoreManager.AddPoints(-matchSet.Count(x => x.BlockDef.BlockType == BlockType.Coin));
 
                     Health.RemoveHealth(points);
                     pointsDisplay.SetPointsText(points);
@@ -286,6 +280,12 @@ public class Tetromino : MonoBehaviour
                 {
                     SoundPlayer.Play(MatchedSound);
                 }
+
+                foreach (var block in matchSet)
+                {
+                    block.gameObject.transform.SetParent(null);
+                    Destroy(block.gameObject);
+                }
             }
         }
 
@@ -293,10 +293,10 @@ public class Tetromino : MonoBehaviour
 
         ScoreManager.AddTetromino();
 
-        if (ScoreManager.TetrominoCount % 20 == 0)
+        if (ScoreManager.TetrominoCount % 15 == 0)
         {
             ScoreManager.AddLevel();
-            FallDelay *= 0.9f;
+            FallDelay *= 0.6f;
         }
 
         TetrominoSpawner.Spawn();

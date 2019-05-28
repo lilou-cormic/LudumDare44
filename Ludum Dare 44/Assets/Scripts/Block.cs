@@ -69,7 +69,7 @@ public class Block : MonoBehaviour, IEqualityComparer<Block>
     private void GetMatchingNeighbor(HashSet<Block> blocks, Vector3 direction)
     {
         var neighbor = GetNeighbor(direction).transform?.GetComponent<Block>();
-        if (neighbor != null && ((int)BlockDef.BlockType >= 100 || neighbor.BlockDef.Equals(BlockDef)))
+        if (neighbor != null && (neighbor.BlockDef.Equals(BlockDef) || (int)BlockDef.BlockType >= 100 || (int)neighbor.BlockDef.BlockType >= 100))
         {
             if (blocks.Add(neighbor))
                 neighbor.GetMatchingNeighbors(blocks);
